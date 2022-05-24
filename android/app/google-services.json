@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "953442974799",
+    "project_id": "skin-lesions-darth",
+    "storage_bucket": "skin-lesions-darth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953442974799:android:2d52ac568ffb3c58e03e3a",
+        "android_client_info": {
+          "package_name": "com.darth.skin_lesions"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "953442974799-40mqicvttpkj1ua96b1b3q4mu1bik0vb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsg_STCdQnwT1GoIrZZtTWXCsJtsWg1NY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "953442974799-40mqicvttpkj1ua96b1b3q4mu1bik0vb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
