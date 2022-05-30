@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:pytorch_mobile/model.dart';
+import 'package:pytorch_mobile/pytorch_mobile.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -99,16 +101,29 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  late Model imageModel;
+  late String prediction = "Please Wait :)";
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  final List<double> mean = [0.485, 0.456, 0.406];
+  final List<double> std = [0.229, 0.224, 0.225];
 
+  DisplayPictureScreen({super.key, required this.imagePath}) {
+    init();
+  }
+
+  Future<void> init() async {
+    imageModel = await PyTorchMobile.loadModel('assets/models/traced_resnet_model.pt');
+    prediction = await imageModel.getImagePrediction(File(imagePath), 224, 224, "assets/labels/labels.csv", mean: mean, std: std);
+    print(prediction);
+  }
+//Image.file(File(imagePath))
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      body: Text(prediction),
     );
   }
 }
