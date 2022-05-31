@@ -64,8 +64,6 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/codelab.png
-    - assets/dog.png
     - assets/models/traced_resnet_model.pt
     - assets/labels/labels.csv
   # To add assets to your application, add an assets section, like this:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:flutter/rendering.dart';
 import 'package:pytorch_mobile/model.dart';
 import 'package:pytorch_mobile/pytorch_mobile.dart';
 
@@ -120,7 +121,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
   var body = SafeArea(
     child: Scaffold(
-        body: PleaseWait()
+        body: Prediction(prediction: "Please Wait as we process your image :)", img: "",)
     ),
   );
 
@@ -136,7 +137,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     setState(() {
       body = SafeArea(
         child: Scaffold(
-            body: Prediction(prediction: prediction)
+            body: Prediction(prediction: prediction, img: widget.imagePath)
         ),
       );
     });
@@ -151,21 +152,77 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
 class Prediction extends StatelessWidget {
   var prediction;
+  var img;
+  var desc;
 
-  Prediction({Key? key, required this.prediction}) : super(key: key) {
+  Prediction({Key? key, required this.prediction, required this.img}) : super(key: key) {
     prediction = prediction;
+    if (prediction == "nevus") {
+      img = Image.file(File(img));
+      desc = const Text(
+        "A nevus is a benign (not cancer) growth on the skin that is formed by a cluster of melanocytes (cells that make a substance called melanin, which gives color to skin and eyes). A nevus is usually dark and may be raised from the skin. Also called mole.",
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.deepPurpleAccent,
+        ),
+        textAlign: TextAlign.center,
+      );
+    } else if (prediction == "melanoma") {
+      img = Image.file(File(img));
+      desc = const Text(
+        "A melanoma is a form of cancer that begins in melanocytes (cells that make the pigment melanin). It may begin in a mole (skin melanoma), but can also begin in other pigmented tissues, such as in the eye or in the intestines.\nWe recommend approaching a dermatologist",
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.deepPurpleAccent,
+        ),
+        textAlign: TextAlign.center,
+      );
+    } else if (prediction == "seborrheic keratosis") {
+      img = Image.file(File(img));
+      desc = const Text(
+        "Seborrheic keratosis is a condition that causes wart-like growths on the skin. The growths are noncancerous (benign).",
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.deepPurpleAccent,
+        ),
+        textAlign: TextAlign.center,
+      );
+    } else {
+      img = Container();
+      desc = Container();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          prediction,
-          style: const TextStyle(
-            fontSize: 33,
-            color: Colors.deepPurpleAccent,
-            fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            children: [
+              const Padding(padding: EdgeInsets.all(16)),
+              img,
+              const Padding(padding: EdgeInsets.all(16)),
+              const Divider(
+                height: 8,
+                thickness: 1,
+                indent: 8,
+                endIndent: 8,
+                color: Colors.grey,
+              ),
+              const Padding(padding: EdgeInsets.all(16)),
+              Text(
+                "We predict your image to be: " + prediction,
+                style: const TextStyle(
+                  fontSize: 33,
+                  color: Colors.deepPurpleAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(8)),
+              desc,
+            ],
           ),
         ),
       ),
