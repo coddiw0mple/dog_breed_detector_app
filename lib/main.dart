@@ -3,19 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:camera/camera.dart';
 import 'dart:async';
 
 import 'firebase_options.dart';
 import 'src/authentication.dart';
-import 'src/widgets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final cameras = await availableCameras();
-  final firstCamera = cameras.first;
-
   runApp(
     ChangeNotifierProvider(
       create: (context) => ApplicationState(),
@@ -32,11 +26,12 @@ class App extends StatelessWidget {
     var home = const HomePage();
 
     return MaterialApp(
-      title: 'Dog Classifier',
+      title: 'Skin Lesions Classifier',
       theme: ThemeData(
         buttonTheme: Theme.of(context).buttonTheme.copyWith(
           highlightColor: Colors.deepPurple,
         ),
+        scaffoldBackgroundColor: Colors.white10,
         primarySwatch: Colors.deepPurple,
         textTheme: GoogleFonts.robotoTextTheme(
           Theme.of(context).textTheme,
@@ -54,34 +49,55 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dog Classifier'),
-      ),
-      body: ListView(
-        children: <Widget>[
-          Image.asset('assets/dog.png'),
-          const SizedBox(height: 8),
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => Authentication(
-              email: appState.email,
-              loginState: appState.loginState,
-              startLoginFlow: appState.startLoginFlow,
-              verifyEmail: appState.verifyEmail,
-              signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
-              cancelRegistration: appState.cancelRegistration,
-              registerAccount: appState.registerAccount,
-              signOut: appState.signOut,
+      body: Center(
+        child: ListView(
+          children: <Widget>[
+           const SizedBox(height: 50),
+            //Image.asset('assets/dog.png'),
+           const Center(
+             child: Text(
+                 "Tiny\nDermatologist",
+                 textAlign: TextAlign.center,
+                 style: TextStyle(
+                  fontSize: 55,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurpleAccent,
+                )
+              ),
+           ),
+            const SizedBox(height: 150),
+            Center(
+              child: Consumer<ApplicationState>(
+                builder: (context, appState, _) => Authentication(
+                  email: appState.email,
+                  loginState: appState.loginState,
+                  startLoginFlow: appState.startLoginFlow,
+                  verifyEmail: appState.verifyEmail,
+                  signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
+                  cancelRegistration: appState.cancelRegistration,
+                  registerAccount: appState.registerAccount,
+                  signOut: appState.signOut,
+                ),
+              ),
             ),
-          ),
-          const Divider(
-            height: 8,
-            thickness: 1,
-            indent: 8,
-            endIndent: 8,
-            color: Colors.grey,
-          ),
-          const Header("Let's detect dog breeds!"),
-        ],
+            const Divider(
+              height: 8,
+              thickness: 1,
+              indent: 8,
+              endIndent: 8,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+                "Welcome! Take a photo to classify a Skin Lesion",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.deepPurpleAccent,
+                )
+            ),
+          ],
+        ),
       ),
     );
   }

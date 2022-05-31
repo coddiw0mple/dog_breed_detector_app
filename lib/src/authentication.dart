@@ -49,19 +49,17 @@ class Authentication extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (loginState) {
       case ApplicationLoginState.loggedOut:
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  startLoginFlow();
-                },
-                child: const Text('Login'),
+        return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: StyledButton(
+                  onPressed: () {
+                    startLoginFlow();
+                  },
+                  child: const Text('Login'),
+                ),
               ),
-            ),
-          ],
-        );
+            );
       case ApplicationLoginState.emailAddress:
         return EmailForm(
             callback: (email) => verifyEmail(
@@ -95,9 +93,10 @@ class Authentication extends StatelessWidget {
         );
       case ApplicationLoginState.loggedIn:
         return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
+            Center(
               child: StyledButton(
                 onPressed: () async {
                   try {
@@ -120,11 +119,10 @@ class Authentication extends StatelessWidget {
                 child: const Text('Take picture'),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40, bottom: 8, right: 40),
+            const Padding(
+              padding: EdgeInsets.only(left: 40, right: 40),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
+            Center(
               child: StyledButton(
                 onPressed: () {
                   signOut();
@@ -194,7 +192,13 @@ class _EmailFormState extends State<EmailForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Header('Sign in with email'),
+        const Text(
+          'Sign in with email',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
@@ -206,8 +210,12 @@ class _EmailFormState extends State<EmailForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _controller,
+                    style: TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Enter your email',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -273,7 +281,13 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Header('Create account'),
+        const Text(
+          'Register your new account',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
@@ -285,8 +299,12 @@ class _RegisterFormState extends State<RegisterForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Enter your email',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -300,8 +318,12 @@ class _RegisterFormState extends State<RegisterForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _displayNameController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'First & last name',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -315,8 +337,12 @@ class _RegisterFormState extends State<RegisterForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _passwordController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Password',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -388,7 +414,13 @@ class _PasswordFormState extends State<PasswordForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Header('Sign in'),
+        const Text(
+          'Sign in with email',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
@@ -400,8 +432,12 @@ class _PasswordFormState extends State<PasswordForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Enter your email',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -415,8 +451,12 @@ class _PasswordFormState extends State<PasswordForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _passwordController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Password',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
                     ),
                     obscureText: true,
                     validator: (value) {
