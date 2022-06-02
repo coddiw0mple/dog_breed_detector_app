@@ -196,59 +196,38 @@ class Prediction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(16)),
-              img,
-              const Padding(padding: EdgeInsets.all(16)),
-              const Divider(
-                height: 8,
-                thickness: 1,
-                indent: 8,
-                endIndent: 8,
-                color: Colors.grey,
-              ),
-              const Padding(padding: EdgeInsets.all(16)),
-              Text(
-                "We predict your image to be: " + prediction,
-                style: const TextStyle(
-                  fontSize: 33,
-                  color: Colors.deepPurpleAccent,
-                  fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              children: [
+                //const Padding(padding: EdgeInsets.all(8)),
+                img,
+                const Padding(padding: EdgeInsets.all(8)),
+                const Divider(
+                  height: 8,
+                  thickness: 1,
+                  indent: 8,
+                  endIndent: 8,
+                  color: Colors.grey,
                 ),
-              ),
-              const Padding(padding: EdgeInsets.all(8)),
-              desc,
-            ],
+                const Padding(padding: EdgeInsets.all(8)),
+                Text(
+                  "We predict your image to be: " + prediction,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    color: Colors.deepPurpleAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(8)),
+                desc,
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-class PleaseWait extends StatelessWidget {
-  const PleaseWait({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          "Please wait as we process your image :)",
-          style: TextStyle(
-            fontSize: 33,
-            color: Colors.deepPurpleAccent,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-

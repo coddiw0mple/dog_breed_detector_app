@@ -53,19 +53,19 @@ class HomePage extends StatelessWidget {
         child: ListView(
           children: <Widget>[
            const SizedBox(height: 50),
-            //Image.asset('assets/dog.png'),
+            Image.asset('assets/icon/icon.png'),
            const Center(
              child: Text(
                  "Tiny\nDermatologist",
                  textAlign: TextAlign.center,
                  style: TextStyle(
-                  fontSize: 55,
+                  fontSize: 35,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurpleAccent,
                 )
               ),
            ),
-            const SizedBox(height: 150),
+            const SizedBox(height: 90),
             Center(
               child: Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(
