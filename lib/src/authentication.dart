@@ -10,6 +10,7 @@ enum ApplicationLoginState {
   register,
   password,
   loggedIn,
+  resetPass,
 }
 
 class Authentication extends StatelessWidget {
@@ -22,11 +23,14 @@ class Authentication extends StatelessWidget {
     required this.cancelRegistration,
     required this.registerAccount,
     required this.signOut,
+    required this.resetPassword,
+    required this.setReset,
   });
 
   final ApplicationLoginState loginState;
   final String? email;
   final void Function() startLoginFlow;
+  final void Function() setReset;
   final void Function(
       String email,
       void Function(Exception e) error,
@@ -44,6 +48,10 @@ class Authentication extends StatelessWidget {
       void Function(Exception e) error,
       ) registerAccount;
   final void Function() signOut;
+  final void Function(
+      String email,
+      void Function(Exception e) error,
+      ) resetPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +74,24 @@ class Authentication extends StatelessWidget {
                 email, (e) => _showErrorDialog(context, 'Invalid email', e)));
       case ApplicationLoginState.password:
         return PasswordForm(
-          email: email!,
-          login: (email, password) {
-            signInWithEmailAndPassword(email, password,
-                    (e) => _showErrorDialog(context, 'Failed to sign in', e));
-          },
+            email: email!,
+            login: (email, password) {
+              signInWithEmailAndPassword(email, password,
+                      (e) => _showErrorDialog(context, 'Failed to sign in', e));
+            },
+            reset: () {
+              setReset();
+            }
+        );
+      case ApplicationLoginState.resetPass:
+        return ResetForm(
+            email: email!,
+            reset: (email) {
+              resetPassword(email, (e) => _showErrorDialog(context, 'Failed to reset password', e));
+            },
+            login: () {
+              cancelRegistration();
+            }
         );
       case ApplicationLoginState.register:
         return RegisterForm(
@@ -270,6 +291,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _displayNameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _passwordController2 = TextEditingController();
 
   @override
   void initState() {
@@ -354,6 +376,28 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ),
                 Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: TextFormField(
+                    controller: _passwordController2,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      hintText: 'Confirm Password',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter your password';
+                      } else if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -389,12 +433,14 @@ class _RegisterFormState extends State<RegisterForm> {
 }
 
 class PasswordForm extends StatefulWidget {
-  const PasswordForm({
-    required this.login,
-    required this.email,
+    const PasswordForm({
+      required this.login,
+      required this.reset,
+      required this.email,
   });
   final String email;
   final void Function(String email, String password) login;
+  final void Function() reset;
   @override
   State<PasswordForm> createState() => _PasswordFormState();
 }
@@ -472,7 +518,6 @@ class _PasswordFormState extends State<PasswordForm> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const SizedBox(width: 16),
                       StyledButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -483,6 +528,13 @@ class _PasswordFormState extends State<PasswordForm> {
                           }
                         },
                         child: const Text('SIGN IN'),
+                      ),
+                      const SizedBox(width: 16),
+                      StyledButton(
+                        onPressed: () {
+                          widget.reset();
+                        },
+                        child: const Text('Forgot Password?'),
                       ),
                       const SizedBox(width: 30),
                     ],
@@ -497,3 +549,128 @@ class _PasswordFormState extends State<PasswordForm> {
   }
 }
 
+class ResetForm extends StatefulWidget {
+  const ResetForm({
+    required this.email,
+    required this.reset,
+    required this.login,
+  });
+  final String email;
+  final void Function(String email) reset;
+  final void Function() login;
+  @override
+  State<ResetForm> createState() => _ResetFormState();
+}
+
+class _ResetFormState extends State<ResetForm> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_ResetFormState');
+  final _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.email;
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Password Reset e-mail sent!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Click on the link we just sent you to reset your password'),
+                Text('Please check your spam and trash folders if you can\'t find our email'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          'Reset Password',
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: TextFormField(
+                    controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      hintText: 'Enter your email to send password reset mail',
+                      hintStyle: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter your email address to continue';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      StyledButton(
+                        onPressed: () {
+                            widget.login();
+                        },
+                        child: const Text('Go back'),
+                      ),
+                      const SizedBox(width: 16),
+                      StyledButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            widget.reset(
+                              _emailController.text,
+                            );
+                            _showMyDialog();
+                            widget.login();
+                          }
+
+                        },
+                        child: const Text('Reset Password'),
+                      ),
+                      const SizedBox(width: 30),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

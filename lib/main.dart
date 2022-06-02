@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: ListView(
           children: <Widget>[
-           const SizedBox(height: 50),
+           //const SizedBox(height: 8),
             Image.asset('assets/icon/icon.png'),
            const Center(
              child: Text(
@@ -65,7 +66,7 @@ class HomePage extends StatelessWidget {
                 )
               ),
            ),
-            const SizedBox(height: 90),
+            const SizedBox(height: 10),
             Center(
               child: Consumer<ApplicationState>(
                 builder: (context, appState, _) => Authentication(
@@ -77,17 +78,19 @@ class HomePage extends StatelessWidget {
                   cancelRegistration: appState.cancelRegistration,
                   registerAccount: appState.registerAccount,
                   signOut: appState.signOut,
+                  resetPassword: appState.resetPassword,
+                  setReset: appState.setReset,
                 ),
               ),
             ),
             const Divider(
-              height: 8,
+              height: 1,
               thickness: 1,
               indent: 8,
               endIndent: 8,
               color: Colors.grey,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const Text(
                 "Welcome! Take a photo to classify a Skin Lesion",
                 textAlign: TextAlign.center,
@@ -173,6 +176,11 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setReset() {
+    _loginState = ApplicationLoginState.resetPass;
+    notifyListeners();
+  }
+
   Future<void> registerAccount(
       String email,
       String displayName,
@@ -182,6 +190,18 @@ class ApplicationState extends ChangeNotifier {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(displayName);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  Future<void> resetPassword(
+      String email,
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email);
+
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
